@@ -1,23 +1,26 @@
 package toy.recipit.scheduler;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import toy.recipit.mapper.TestMapper;
+import toy.recipit.common.Constants;
+import toy.recipit.service.RecipeService;
 
 @Slf4j
 @Component
 @EnableScheduling
+@RequiredArgsConstructor
 public class GenerateWeeklyRecipeScheduler {
-    private final TestMapper testMapper;
+    private final RecipeService recipeService;
 
-    public GenerateWeeklyRecipeScheduler(TestMapper testMapper) {
-        this.testMapper = testMapper;
-    }
-
-    @Scheduled(cron = "*/5 * * * * *")
+    @Scheduled(cron = "0 0 2 * * *", zone = Constants.TimeZone.SEOUL)
     public void generateWeeklyRecipe() {
-        log.info(testMapper.test());
+        try {
+            recipeService.generateWeeklyRecipes();
+        } catch (Exception e) {
+            log.error("Error generateWeeklyRecipes", e);
+        }
     }
 }

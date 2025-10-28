@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="toy.recipit.mapper.WeeklyRecipeMapper">
+
+    <select id="getTopLikedRecipes" resultType="toy.recipit.mapper.vo.WeeklyRecipeInfoVo">
+        SELECT
+            R.RECIPE_NO       AS recipeNo,
+            R.CATEGORY_CODE   AS categoryCode
+        FROM RC_RECIPE R
+            INNER JOIN RC_LIKE L
+                ON R.RECIPE_NO = L.RECIPE_NO
+        WHERE L.LIKE_YN = 'Y'
+          AND L.CREATE_DATETIME BETWEEN #{startDateTime} AND #{endDateTime}
+          AND R.STATUS_CODE = #{statusCode}
+        GROUP BY R.RECIPE_NO, R.CATEGORY_CODE
+        HAVING COUNT(L.RECIPE_NO) > 0
+        ORDER BY COUNT(L.RECIPE_NO) DESC
+        LIMIT 10
+    </select>
+
+    <insert id="insertWeeklyRecipes">
+        INSERT INTO RC_WEEKLY (
+            RECOMMENDED_DATE,
+            RECIPE_NO,
+            RECOMMENDED_TYPE_CODE,
+            SORT_SEQUENCE,
+            CREATE_DATETIME,
+            CREATE_USER,
+            EDIT_DATETIME,
+            EDIT_USER
+        )
+        VALUES
+        <foreach collection="weeklyRecipeVoList" item="item" separator=",">
+            (
+                #{recommendDate},
+                #{item.recipeNo},
+                #{item.recommendedTypeCode},
+                #{item.sortSequence},
+                NOW(),
+                0,
+                NOW(),
+                0
+            )
+        </foreach>
+    </insert>
+
+    <select id="getLowFrequencyCategories" resultType="string">
+        SELECT
+            C.CODE AS categoryCode
+        FROM CM_DETAIL_CODE C
+            LEFT JOIN RC_RECIPE R
+                ON R.CATEGORY_CODE = C.CODE
+            LEFT JOIN RC_WEEKLY W
+                ON W.RECIPE_NO = R.RECIPE_NO
+        WHERE C.GROUP_CODE = #{categoryGroupCode}
+          AND C.USE_YN = 'Y'
+        GROUP BY C.CODE
+        ORDER BY COUNT(W.RECIPE_NO)
+    </select>
+
+    <select id="getRandomRecipeByCategory" resultType="toy.recipit.mapper.vo.WeeklyRecipeInfoVo">
+        SELECT
+        R.RECIPE_NO       AS recipeNo,
+        R.CATEGORY_CODE   AS categoryCode
+        FROM RC_RECIPE R
+        WHERE R.STATUS_CODE = #{statusCode}
+        AND R.CATEGORY_CODE = #{categoryCode}
+        <if test="excludeRecipeNos != null and excludeRecipeNos.size() > 0">
+            AND R.RECIPE_NO NOT IN
+            <foreach collection="excludeRecipeNos" item="recipeNo" open="(" close=")" separator=",">
+                #{recipeNo}
+            </foreach>
+        </if>
+        ORDER BY RAND(UNIX_TIMESTAMP(NOW()))
+        LIMIT 1
+    </select>
+
+</mapper>
