@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toy.recipit.common.Constants;
 import toy.recipit.mapper.WeeklyRecipeMapper;
-import toy.recipit.mapper.vo.RecipeLikeVo;
-import toy.recipit.mapper.vo.WeeklyRecipeVo;
+import toy.recipit.mapper.vo.WeeklyRecipeInfoVo;
+import toy.recipit.mapper.vo.InsertWeeklyRecipeVo;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -30,9 +30,9 @@ public class RecipeService {
         LocalDateTime startDateTime = today.minusWeeks(1).with(todayDay).atStartOfDay();
         LocalDateTime endDateTime = today.minusDays(1).atTime(LocalTime.MAX);
 
-        List<WeeklyRecipeVo> weeklyRecipeList = new ArrayList<>();
+        List<InsertWeeklyRecipeVo> weeklyRecipeList = new ArrayList<>();
 
-        List<RecipeLikeVo> topLikedList =
+        List<WeeklyRecipeInfoVo> topLikedList =
                 weeklyRecipeMapper.getTopLikedRecipes(startDateTime, endDateTime, Constants.Recipe.RELEASE);
 
         if (!topLikedList.isEmpty()) {
@@ -43,10 +43,10 @@ public class RecipeService {
             int neededRecipeCount = Constants.WeeklyRecipe.RECOMMEND_COUNT - weeklyRecipeList.size();
 
             List<String> excludeRecipeNos = weeklyRecipeList.stream()
-                    .map(WeeklyRecipeVo::getRecipeNo)
+                    .map(InsertWeeklyRecipeVo::getRecipeNo)
                     .toList();
 
-            List<WeeklyRecipeVo> supplements =
+            List<InsertWeeklyRecipeVo> supplements =
                     buildCategorySupplements(excludeRecipeNos, neededRecipeCount);
 
             weeklyRecipeList.addAll(supplements);
@@ -55,12 +55,12 @@ public class RecipeService {
         weeklyRecipeMapper.insertWeeklyRecipes(today, weeklyRecipeList);
     }
 
-    private List<WeeklyRecipeVo> buildWeeklyRecipes(List<RecipeLikeVo> topLikedList) {
-        List<WeeklyRecipeVo> weeklyRecipes = new ArrayList<>();
+    private List<InsertWeeklyRecipeVo> buildWeeklyRecipes(List<WeeklyRecipeInfoVo> topLikedList) {
+        List<InsertWeeklyRecipeVo> weeklyRecipes = new ArrayList<>();
 
         for (int i = 0; i < topLikedList.size(); i++) {
-            RecipeLikeVo vo = topLikedList.get(i);
-            weeklyRecipes.add(new WeeklyRecipeVo(
+            WeeklyRecipeInfoVo vo = topLikedList.get(i);
+            weeklyRecipes.add(new InsertWeeklyRecipeVo(
                     vo.getRecipeNo(),
                     vo.getCategoryCode(),
                     Constants.RecommendType.RECOMMEND,
@@ -71,13 +71,15 @@ public class RecipeService {
         return weeklyRecipes;
     }
 
-    private List<WeeklyRecipeVo> buildCategorySupplements(List<String> excludeRecipeNos, int neededRecipeCount) {
-        List<WeeklyRecipeVo> supplementRecipes = new ArrayList<>();
+    private List<InsertWeeklyRecipeVo> buildCategorySupplements(List<String> excludeRecipeNos, int neededRecipeCount) {
+        List<WeeklyRecipeInfoVo> supplementRecipes = new ArrayList<>();
 
         List<String> lowFrequencyCategories = weeklyRecipeMapper.getLowFrequencyCategories(Constants.GroupCode.RECIPE_CATEGORY);
 
         for (String categoryCode : lowFrequencyCategories) {
-            if (supplementRecipes.size() >= neededRecipeCount) break;
+            if (supplementRecipes.size() >= neededRecipeCount) {
+                break;
+            }
 
             weeklyRecipeMapper.getRandomRecipeByCategory(categoryCode, excludeRecipeNos, Constants.Recipe.RELEASE)
                     .ifPresent(supplementRecipes::add);
@@ -86,18 +88,20 @@ public class RecipeService {
         return getWeeklyRecipeVos(neededRecipeCount, supplementRecipes);
     }
 
-    private List<WeeklyRecipeVo> getWeeklyRecipeVos(int neededRecipeCount, List<WeeklyRecipeVo> supplements) {
-        List<WeeklyRecipeVo> weeklyRecipeVoList = new ArrayList<>();
+    private List<InsertWeeklyRecipeVo> getWeeklyRecipeVos(int neededRecipeCount, List<WeeklyRecipeInfoVo> supplements) {
+        List<InsertWeeklyRecipeVo> weeklyRecipeVoList = new ArrayList<>();
 
         for (int i = 0; i < supplements.size(); i++) {
-            WeeklyRecipeVo vo = supplements.get(i);
-            WeeklyRecipeVo updated = new WeeklyRecipeVo(
-                    vo.getRecipeNo(),
-                    vo.getCategoryCode(),
+            WeeklyRecipeInfoVo weeklyRecipeInfoVo = supplements.get(i);
+
+            InsertWeeklyRecipeVo insertWeeklyRecipeVo = new InsertWeeklyRecipeVo(
+                    weeklyRecipeInfoVo.getRecipeNo(),
+                    weeklyRecipeInfoVo.getCategoryCode(),
                     Constants.RecommendType.SUPPLEMENT,
                     Constants.WeeklyRecipe.RECOMMEND_COUNT - neededRecipeCount + i
             );
-            weeklyRecipeVoList.add(updated);
+
+            weeklyRecipeVoList.add(insertWeeklyRecipeVo);
         }
 
         return weeklyRecipeVoList;

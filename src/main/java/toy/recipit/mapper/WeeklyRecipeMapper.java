@@ -2,8 +2,8 @@ package toy.recipit.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import toy.recipit.mapper.vo.RecipeLikeVo;
-import toy.recipit.mapper.vo.WeeklyRecipeVo;
+import toy.recipit.mapper.vo.WeeklyRecipeInfoVo;
+import toy.recipit.mapper.vo.InsertWeeklyRecipeVo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,16 +12,16 @@ import java.util.Optional;
 
 @Mapper
 public interface WeeklyRecipeMapper {
-    List<RecipeLikeVo> getTopLikedRecipes(@Param("startDateTime") LocalDateTime startDateTime,
-                                          @Param("endDateTime") LocalDateTime endDateTime,
-                                          @Param("statusCode") String statusCode);
+    List<WeeklyRecipeInfoVo> getTopLikedRecipes(@Param("startDateTime") LocalDateTime startDateTime,
+                                                @Param("endDateTime") LocalDateTime endDateTime,
+                                                @Param("statusCode") String statusCode);
 
     void insertWeeklyRecipes(@Param("recommendDate") LocalDate recommendDate,
-                             @Param("weeklyRecommendationVoList") List<WeeklyRecipeVo> weeklyRecommendationVoList);
+                             @Param("weeklyRecipeVoList") List<InsertWeeklyRecipeVo> weeklyRecipeVoList);
 
     List<String> getLowFrequencyCategories(@Param("categoryGroupCode") String categoryGroupCode);
 
-    Optional<WeeklyRecipeVo> getRandomRecipeByCategory(@Param("categoryCode") String categoryCode,
+    Optional<WeeklyRecipeInfoVo> getRandomRecipeByCategory(@Param("categoryCode") String categoryCode,
                                                        @Param("excludeRecipeNos") List<String> excludeRecipeNos,
                                                        @Param("statusCode") String statusCode);
 }

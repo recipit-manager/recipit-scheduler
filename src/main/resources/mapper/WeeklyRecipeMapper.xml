@@ -3,7 +3,7 @@
 
 <mapper namespace="toy.recipit.mapper.WeeklyRecipeMapper">
 
-    <select id="getTopLikedRecipes" resultType="toy.recipit.mapper.vo.RecipeLikeVo">
+    <select id="getTopLikedRecipes" resultType="toy.recipit.mapper.vo.WeeklyRecipeInfoVo">
         SELECT
             R.RECIPE_NO       AS recipeNo,
             R.CATEGORY_CODE   AS categoryCode
@@ -31,7 +31,7 @@
             EDIT_USER
         )
         VALUES
-        <foreach collection="weeklyRecommendationVoList" item="item" separator=",">
+        <foreach collection="weeklyRecipeVoList" item="item" separator=",">
             (
                 #{recommendDate},
                 #{item.recipeNo},
@@ -59,12 +59,10 @@
         ORDER BY COUNT(W.RECIPE_NO)
     </select>
 
-    <select id="getRandomRecipeByCategory" resultType="toy.recipit.mapper.vo.WeeklyRecipeVo">
+    <select id="getRandomRecipeByCategory" resultType="toy.recipit.mapper.vo.WeeklyRecipeInfoVo">
         SELECT
         R.RECIPE_NO       AS recipeNo,
-        R.CATEGORY_CODE   AS categoryCode,
-        'RW02'            AS recommendedTypeCode,
-        0                 AS sortSequence
+        R.CATEGORY_CODE   AS categoryCode
         FROM RC_RECIPE R
         WHERE R.STATUS_CODE = #{statusCode}
         AND R.CATEGORY_CODE = #{categoryCode}

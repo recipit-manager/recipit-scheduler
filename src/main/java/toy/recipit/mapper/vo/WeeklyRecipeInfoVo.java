@@ -5,9 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class WeeklyRecipeVo {
+public class WeeklyRecipeInfoVo {
     private final String recipeNo;
     private final String categoryCode;
-    private final String recommendedTypeCode;
-    private final int sortSequence;
 }
