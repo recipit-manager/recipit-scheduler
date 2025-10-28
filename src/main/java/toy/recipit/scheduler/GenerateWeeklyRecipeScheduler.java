@@ -15,7 +15,7 @@ import toy.recipit.service.RecipeService;
 public class GenerateWeeklyRecipeScheduler {
     private final RecipeService recipeService;
 
-    @Scheduled(cron = "0 0 2 * * *", zone = Constants.TimeStamp.SEOUL)
+    @Scheduled(cron = "0 0 2 * * *", zone = Constants.TimeZone.SEOUL)
     public void generateWeeklyRecipe() {
         try {
             recipeService.generateWeeklyRecipes();

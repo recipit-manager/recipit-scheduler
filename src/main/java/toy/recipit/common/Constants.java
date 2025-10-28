@@ -21,7 +21,7 @@ public final class Constants {
         String DELETED = "RS4";
     }
 
-    public interface TimeStamp {
+    public interface TimeZone {
         String SEOUL = "Asia/Seoul";
     }
 }
