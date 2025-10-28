@@ -12,10 +12,14 @@ import toy.recipit.service.RecipeService;
 @EnableScheduling
 @RequiredArgsConstructor
 public class GenerateWeeklyRecipeScheduler {
-    private final RecipeService RecipeService;
+    private final RecipeService recipeService;
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 2 * * *", zone = "Asia/Seoul")
     public void generateWeeklyRecipe() {
-        RecipeService.generateWeeklyRecipes();
+        try {
+            recipeService.generateWeeklyRecipes();
+        } catch (Exception e) {
+            log.error("Error generateWeeklyRecipes", e);
+        }
     }
 }

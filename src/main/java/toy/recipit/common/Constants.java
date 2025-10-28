@@ -5,7 +5,7 @@ public final class Constants {
         String RECIPE_CATEGORY = "RC100";
     }
 
-        public interface Number {
+    public interface Number {
         int ZERO = 0;
         int ONE = 1;
     }
@@ -19,7 +19,7 @@ public final class Constants {
         String SUPPLEMENT = "RW02";
     }
 
-    public interface Recipe{
+    public interface Recipe {
         String RELEASE = "RS1";
         String PRIVATE = "RS2";
         String DRAFT = "RS3";
