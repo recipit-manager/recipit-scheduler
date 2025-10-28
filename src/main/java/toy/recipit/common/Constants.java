@@ -5,11 +5,6 @@ public final class Constants {
         String RECIPE_CATEGORY = "RC100";
     }
 
-    public interface Number {
-        int ZERO = 0;
-        int ONE = 1;
-    }
-
     public interface WeeklyRecipe {
         int RECOMMEND_COUNT = 10;
     }
@@ -24,5 +19,9 @@ public final class Constants {
         String PRIVATE = "RS2";
         String DRAFT = "RS3";
         String DELETED = "RS4";
+    }
+
+    public interface TimeStamp {
+        String SEOUL = "Asia/Seoul";
     }
 }

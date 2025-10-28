@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import toy.recipit.common.Constants;
 import toy.recipit.service.RecipeService;
 
 @Slf4j
@@ -14,7 +15,7 @@ import toy.recipit.service.RecipeService;
 public class GenerateWeeklyRecipeScheduler {
     private final RecipeService recipeService;
 
-    @Scheduled(cron = "0 0 2 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 2 * * *", zone = Constants.TimeStamp.SEOUL)
     public void generateWeeklyRecipe() {
         try {
             recipeService.generateWeeklyRecipes();

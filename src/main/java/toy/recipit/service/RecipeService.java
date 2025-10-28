@@ -27,38 +27,38 @@ public class RecipeService {
     public void generateWeeklyRecipes() {
         LocalDate today = LocalDate.now();
         DayOfWeek todayDay = today.getDayOfWeek();
-        LocalDateTime startDateTime = today.minusWeeks(Constants.Number.ONE).with(todayDay).atStartOfDay();
-        LocalDateTime endDateTime = today.minusDays(Constants.Number.ONE).atTime(LocalTime.MAX);
+        LocalDateTime startDateTime = today.minusWeeks(1).with(todayDay).atStartOfDay();
+        LocalDateTime endDateTime = today.minusDays(1).atTime(LocalTime.MAX);
 
-        List<WeeklyRecipeVo> finalList = new ArrayList<>();
+        List<WeeklyRecipeVo> weeklyRecipeList = new ArrayList<>();
 
         List<RecipeLikeVo> topLikedList =
                 weeklyRecipeMapper.getTopLikedRecipes(startDateTime, endDateTime, Constants.Recipe.RELEASE);
 
-        if(!topLikedList.isEmpty()) {
-            finalList = buildWeeklyRecipes(topLikedList);
+        if (!topLikedList.isEmpty()) {
+            weeklyRecipeList = buildWeeklyRecipes(topLikedList);
         }
 
-        if (finalList.size() < Constants.WeeklyRecipe.RECOMMEND_COUNT) {
-            int neededRecipeCount = Constants.WeeklyRecipe.RECOMMEND_COUNT - finalList.size();
+        if (weeklyRecipeList.size() < Constants.WeeklyRecipe.RECOMMEND_COUNT) {
+            int neededRecipeCount = Constants.WeeklyRecipe.RECOMMEND_COUNT - weeklyRecipeList.size();
 
-            List<String> excludeRecipeNos = finalList.stream()
+            List<String> excludeRecipeNos = weeklyRecipeList.stream()
                     .map(WeeklyRecipeVo::getRecipeNo)
                     .toList();
 
             List<WeeklyRecipeVo> supplements =
                     buildCategorySupplements(excludeRecipeNos, neededRecipeCount);
 
-            finalList.addAll(supplements);
+            weeklyRecipeList.addAll(supplements);
         }
 
-        weeklyRecipeMapper.insertWeeklyRecipes(today, finalList);
+        weeklyRecipeMapper.insertWeeklyRecipes(today, weeklyRecipeList);
     }
 
     private List<WeeklyRecipeVo> buildWeeklyRecipes(List<RecipeLikeVo> topLikedList) {
         List<WeeklyRecipeVo> weeklyRecipes = new ArrayList<>();
 
-        for (int i = Constants.Number.ZERO; i < topLikedList.size(); i++) {
+        for (int i = 0; i < topLikedList.size(); i++) {
             RecipeLikeVo vo = topLikedList.get(i);
             weeklyRecipes.add(new WeeklyRecipeVo(
                     vo.getRecipeNo(),
@@ -89,7 +89,7 @@ public class RecipeService {
     private List<WeeklyRecipeVo> getWeeklyRecipeVos(int neededRecipeCount, List<WeeklyRecipeVo> supplements) {
         List<WeeklyRecipeVo> weeklyRecipeVoList = new ArrayList<>();
 
-        for (int i = Constants.Number.ZERO; i < supplements.size(); i++) {
+        for (int i = 0; i < supplements.size(); i++) {
             WeeklyRecipeVo vo = supplements.get(i);
             WeeklyRecipeVo updated = new WeeklyRecipeVo(
                     vo.getRecipeNo(),
