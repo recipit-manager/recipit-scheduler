@@ -60,6 +60,16 @@ public class RecipeService {
         log.info("WeeklyRecipe Deleted rows: {}", weeklyRecipeMapper.deleteWeeklyRecipes());
     }
 
+    @Transactional
+    public void deleteViewRecipes() {
+        log.info("View Recipe Deleted rows: {}", weeklyRecipeMapper.deleteViewRecipes());
+    }
+
+    @Transactional
+    public void deleteUnlikeRecipes() {
+        log.info("Unlike Recipe Deleted rows: {}", weeklyRecipeMapper.deleteUnlikeRecipes());
+    }
+
     private List<InsertWeeklyRecipeVo> buildWeeklyRecipes(List<WeeklyRecipeInfoVo> topLikedList) {
         List<InsertWeeklyRecipeVo> weeklyRecipes = new ArrayList<>();
 
