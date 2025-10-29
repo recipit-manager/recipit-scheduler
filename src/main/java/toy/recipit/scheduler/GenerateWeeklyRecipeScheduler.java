@@ -23,4 +23,13 @@ public class GenerateWeeklyRecipeScheduler {
             log.error("Error generateWeeklyRecipes", e);
         }
     }
+
+    @Scheduled(cron = "0 10 3 * * *", zone = Constants.TimeZone.SEOUL)
+    public void deleteWeeklyRecipe() {
+        try {
+            recipeService.deleteWeeklyRecipes();
+        } catch (Exception e) {
+            log.error("Error deleteWeeklyRecipe", e);
+        }
+    }
 }

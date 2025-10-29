@@ -55,6 +55,11 @@ public class RecipeService {
         weeklyRecipeMapper.insertWeeklyRecipes(today, weeklyRecipeList);
     }
 
+    @Transactional
+    public void deleteWeeklyRecipes() {
+        log.info("WeeklyRecipe Deleted rows: {}", weeklyRecipeMapper.deleteWeeklyRecipes());
+    }
+
     private List<InsertWeeklyRecipeVo> buildWeeklyRecipes(List<WeeklyRecipeInfoVo> topLikedList) {
         List<InsertWeeklyRecipeVo> weeklyRecipes = new ArrayList<>();
 
