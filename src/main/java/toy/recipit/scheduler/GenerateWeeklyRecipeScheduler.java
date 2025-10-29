@@ -24,7 +24,7 @@ public class GenerateWeeklyRecipeScheduler {
         }
     }
 
-    @Scheduled(cron = "0 10 3 * * *", zone = Constants.TimeZone.SEOUL)
+    @Scheduled(cron = "0 0 3 * * *", zone = Constants.TimeZone.SEOUL)
     public void deleteWeeklyRecipe() {
         try {
             recipeService.deleteWeeklyRecipes();
@@ -33,7 +33,7 @@ public class GenerateWeeklyRecipeScheduler {
         }
     }
 
-    @Scheduled(cron = "0 30 3 * * *", zone = Constants.TimeZone.SEOUL)
+    @Scheduled(cron = "0 15 3 * * *", zone = Constants.TimeZone.SEOUL)
     public void deleteViewRecipe() {
         try {
             recipeService.deleteViewRecipes();
