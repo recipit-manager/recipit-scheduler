@@ -24,4 +24,6 @@ public interface WeeklyRecipeMapper {
     Optional<WeeklyRecipeInfoVo> getRandomRecipeByCategory(@Param("categoryCode") String categoryCode,
                                                        @Param("excludeRecipeNos") List<String> excludeRecipeNos,
                                                        @Param("statusCode") String statusCode);
+
+    int deleteWeeklyRecipes();
 }

@@ -76,4 +76,8 @@
         LIMIT 1
     </select>
 
+    <delete id="deleteWeeklyRecipes">
+        DELETE FROM RC_WEEKLY
+            <![CDATA[WHERE RECOMMENDED_DATE < DATE_SUB(CURDATE(), INTERVAL 4 WEEK)]]>
+    </delete>
 </mapper>
