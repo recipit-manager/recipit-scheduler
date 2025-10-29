@@ -80,4 +80,15 @@
         DELETE FROM RC_WEEKLY
             <![CDATA[WHERE RECOMMENDED_DATE < DATE_SUB(CURDATE(), INTERVAL 4 WEEK)]]>
     </delete>
+
+    <delete id="deleteViewRecipes">
+        DELETE FROM RC_RECENT_RECIPE
+            <![CDATA[WHERE EDIT_DATETIME < DATE_SUB(NOW(), INTERVAL 180 DAY)]]>
+    </delete>
+
+    <delete id="deleteUnlikeRecipes">
+        DELETE FROM RC_LIKE
+            WHERE EDIT_DATETIME <![CDATA[< DATE_SUB(NOW(), INTERVAL 30 DAY)]]>
+              AND LIKE_YN = 'N'
+    </delete>
 </mapper>

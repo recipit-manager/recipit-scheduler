@@ -24,12 +24,30 @@ public class GenerateWeeklyRecipeScheduler {
         }
     }
 
-    @Scheduled(cron = "0 10 3 * * *", zone = Constants.TimeZone.SEOUL)
+    @Scheduled(cron = "0 0 3 * * *", zone = Constants.TimeZone.SEOUL)
     public void deleteWeeklyRecipe() {
         try {
             recipeService.deleteWeeklyRecipes();
         } catch (Exception e) {
             log.error("Error deleteWeeklyRecipe", e);
+        }
+    }
+
+    @Scheduled(cron = "0 15 3 * * *", zone = Constants.TimeZone.SEOUL)
+    public void deleteViewRecipe() {
+        try {
+            recipeService.deleteViewRecipes();
+        } catch (Exception e) {
+            log.error("Error deleteUnLikeRecipe", e);
+        }
+    }
+
+    @Scheduled(cron = "0 30 3 * * *", zone = Constants.TimeZone.SEOUL)
+    public void deleteUnLikeRecipe() {
+        try {
+            recipeService.deleteUnlikeRecipes();
+        } catch (Exception e) {
+            log.error("Error deleteUnLikeRecipe", e);
         }
     }
 }

@@ -26,4 +26,8 @@ public interface WeeklyRecipeMapper {
                                                        @Param("statusCode") String statusCode);
 
     int deleteWeeklyRecipes();
+
+    int deleteViewRecipes();
+
+    int deleteUnlikeRecipes();
 }
