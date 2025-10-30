@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toy.recipit.common.Constants;
 import toy.recipit.mapper.RecipeMapper;
+import toy.recipit.mapper.vo.InsertWeeklyRecipeVo;
 import toy.recipit.mapper.vo.NoticeVo;
 import toy.recipit.mapper.vo.RecipeVo;
 import toy.recipit.mapper.vo.WeeklyRecipeInfoVo;
-import toy.recipit.mapper.vo.InsertWeeklyRecipeVo;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
