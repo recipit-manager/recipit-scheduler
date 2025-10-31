@@ -1,3 +1,7 @@
+recipit:
+  noticeApi:
+    url: http://localhost:8080/notice/dispatch
+
 spring:
   datasource:
     hikari:

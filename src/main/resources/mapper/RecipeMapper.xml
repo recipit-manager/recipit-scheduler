@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="toy.recipit.mapper.WeeklyRecipeMapper">
+<mapper namespace="toy.recipit.mapper.RecipeMapper">
 
     <select id="getTopLikedRecipes" resultType="toy.recipit.mapper.vo.WeeklyRecipeInfoVo">
         SELECT
@@ -91,4 +91,59 @@
             WHERE EDIT_DATETIME <![CDATA[< DATE_SUB(NOW(), INTERVAL 30 DAY)]]>
               AND LIKE_YN = 'N'
     </delete>
+
+    <select id="getDraftRecipes" resultType="toy.recipit.mapper.vo.RecipeVo">
+        SELECT
+            RECIPE_NO       AS recipeNo,
+            USER_NO         AS userNo,
+            TITLE           AS title,
+            DESCRIPTION     AS description,
+            CATEGORY_CODE   AS categoryCode,
+            COOKING_TIME    AS cookingTime,
+            SERVING_SIZE    AS servingSize,
+            DIFFICULTY_CODE AS difficultyCode,
+            STATUS_CODE     AS statusCode
+        FROM RC_RECIPE
+        WHERE EDIT_DATETIME <![CDATA[< #{deleteDateTime}]]>
+          AND STATUS_CODE = #{draftStatusCode}
+    </select>
+
+    <update id="deleteOlderDraftRecipes">
+        UPDATE RC_RECIPE
+        SET STATUS_CODE = #{deleteStatusCode},
+            EDIT_DATETIME = NOW(),
+            EDIT_USER = #{systemUserNo}
+        WHERE RECIPE_NO IN
+        <foreach collection="recipeNos" item="recipeNo" open="(" separator="," close=")">
+            #{recipeNo}
+        </foreach>
+    </update>
+
+    <insert id="insertNotices" useGeneratedKeys="true" keyProperty="noticeNo">
+        INSERT INTO US_NOTICE (
+            USER_NO,
+            RECIPE_NO,
+            CATEGORY_CODE,
+            READ_YN,
+            CONTENTS,
+            CREATE_DATETIME,
+            CREATE_USER,
+            EDIT_DATETIME,
+            EDIT_USER
+        )
+        VALUES
+        <foreach collection="noticeList" item="notice" separator=",">
+            (
+            #{notice.userNo},
+            #{notice.recipeNo},
+            #{notice.categoryCode},
+            'N',
+            #{notice.contents},
+            NOW(),
+            #{notice.userNo},
+            NOW(),
+            #{notice.userNo}
+            )
+        </foreach>
+    </insert>
 </mapper>
