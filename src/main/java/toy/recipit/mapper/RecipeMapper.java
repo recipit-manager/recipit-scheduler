@@ -33,11 +33,12 @@ public interface RecipeMapper {
 
     int deleteUnlikeRecipes();
 
-    List<RecipeVo> getDraftRecipes(@Param("draftStatusCode") String draftStatusCode);
+    List<RecipeVo> getDraftRecipes(@Param("draftStatusCode") String draftStatusCode,
+                                   @Param("deleteDateTime") LocalDateTime deleteDateTime);
 
-    int deleteDraftRecipes(@Param("deleteStatusCode") String deleteStatusCode,
-                           @Param("systemUserNo") String systemUserNo,
-                           @Param("recipeNos") List<String> recipeNos);
+    int deleteOlderDraftRecipes(@Param("deleteStatusCode") String deleteStatusCode,
+                                @Param("systemUserNo") String systemUserNo,
+                                @Param("recipeNos") List<String> recipeNos);
 
     void insertNotices(@Param("noticeList") List<NoticeVo> noticeList);
 }

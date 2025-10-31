@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import toy.recipit.Dispatch.dto.NoticeItem;
 import toy.recipit.common.Constants;
 import toy.recipit.mapper.RecipeMapper;
 import toy.recipit.mapper.vo.InsertWeeklyRecipeVo;
 import toy.recipit.mapper.vo.NoticeVo;
 import toy.recipit.mapper.vo.RecipeVo;
 import toy.recipit.mapper.vo.WeeklyRecipeInfoVo;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -72,19 +74,21 @@ public class RecipeService {
     }
 
     @Transactional
-    public void deleteDraftRecipes() {
-        List<RecipeVo> draftRecipes = recipeMapper.getDraftRecipes(Constants.Recipe.DRAFT);
+    public List<NoticeItem> deleteDraftRecipes() {
+        List<RecipeVo> draftRecipes = recipeMapper.getDraftRecipes(
+                Constants.Recipe.DRAFT,
+                LocalDateTime.now().minusDays(30));
 
         if (draftRecipes.isEmpty()) {
             log.info("No draft recipes to delete");
-            return;
+            return List.of();
         }
 
         List<String> recipeNos = draftRecipes.stream()
                 .map(RecipeVo::getRecipeNo)
                 .toList();
 
-        log.info("Draft recipes deleted: {} rows", recipeMapper.deleteDraftRecipes(
+        log.info("Draft recipes deleted: {} rows", recipeMapper.deleteOlderDraftRecipes(
                 Constants.Recipe.DELETED,
                 Constants.SystemId.SYSTEM_NUMBER,
                 recipeNos)
@@ -103,6 +107,10 @@ public class RecipeService {
                 .toList();
 
         recipeMapper.insertNotices(noticeList);
+
+        return noticeList.stream()
+                .map(noticeVo -> new NoticeItem(noticeVo.getNoticeNo(), noticeVo.getUserNo()))
+                .toList();
     }
 
     private List<InsertWeeklyRecipeVo> buildWeeklyRecipes(List<WeeklyRecipeInfoVo> topLikedList) {

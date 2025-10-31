@@ -104,11 +104,11 @@
             DIFFICULTY_CODE AS difficultyCode,
             STATUS_CODE     AS statusCode
         FROM RC_RECIPE
-        WHERE EDIT_DATETIME <![CDATA[< DATE_SUB(NOW(), INTERVAL 30 DAY)]]>
+        WHERE EDIT_DATETIME <![CDATA[< #{deleteDateTime}]]>
           AND STATUS_CODE = #{draftStatusCode}
     </select>
 
-    <update id="deleteDraftRecipes">
+    <update id="deleteOlderDraftRecipes">
         UPDATE RC_RECIPE
         SET STATUS_CODE = #{deleteStatusCode},
             EDIT_DATETIME = NOW(),
@@ -119,7 +119,7 @@
         </foreach>
     </update>
 
-    <insert id="insertNotices">
+    <insert id="insertNotices" useGeneratedKeys="true" keyProperty="noticeNo">
         INSERT INTO US_NOTICE (
             USER_NO,
             RECIPE_NO,
