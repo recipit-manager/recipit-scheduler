@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="toy.recipit.mapper.NoticeMapper">
+
+    <delete id="deleteOlderNotices">
+        DELETE FROM US_NOTICE
+            WHERE CREATE_DATETIME <![CDATA[<]]> DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+    </delete>
+
+</mapper>
