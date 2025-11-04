@@ -24,4 +24,19 @@ public final class Constants {
     public interface TimeZone {
         String SEOUL = "Asia/Seoul";
     }
+
+    public interface SystemId {
+        String SYSTEM_NUMBER = "0";
+    }
+
+    public interface Yn {
+        String YES = "Y";
+        String NO = "N";
+    }
+
+    public interface NoticeType {
+        String DRAFT = "NT01";
+        String USER_REACTION = "NT02";
+        String RECIPE_STATUS = "NT03";
+    }
 }
