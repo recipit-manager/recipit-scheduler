@@ -19,6 +19,9 @@ public class NoticeDispatch {
     @Value("${recipit.noticeApi.url}")
     private String apiUrl;
 
+    @Value("${internal.auth-key}")
+    private String internalAuthKey;
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     public void sendNotices(List<NoticeItem> items) {
@@ -27,6 +30,7 @@ public class NoticeDispatch {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
+        headers.set("AuthenticationKey", internalAuthKey);
         HttpEntity<NoticeRequest> requestEntity = new HttpEntity<>(noticeRequest, headers);
 
         try {
