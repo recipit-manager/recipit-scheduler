@@ -59,4 +59,13 @@ public class RecipeScheduler {
             log.error("Error deleteDraftRecipe", e);
         }
     }
+
+    @Scheduled(cron = "0 0 4 * * *", zone = Constants.TimeZone.SEOUL)
+    public void sendDraftRecipeExpireNotice() {
+        try {
+            recipeService.sendDraftRecipeExpireNotice();
+        } catch (Exception e) {
+            log.error("Error delete old draft recipe notices", e);
+        }
+    }
 }

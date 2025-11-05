@@ -1,4 +1,4 @@
-package toy.recipit.Dispatch;
+package toy.recipit.dispatch;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,8 +8,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import toy.recipit.Dispatch.dto.NoticeItem;
-import toy.recipit.Dispatch.dto.NoticeRequest;
+import toy.recipit.dispatch.dto.NoticeItem;
+import toy.recipit.dispatch.dto.NoticeRequest;
 
 import java.util.List;
 

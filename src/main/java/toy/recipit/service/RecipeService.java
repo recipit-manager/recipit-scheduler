@@ -108,8 +108,28 @@ public class RecipeService {
         noticeService.insertNotice(noticeList);
     }
 
-    public List<RecipeVo> getRecipesScheduledExpire() {
-        return recipeMapper.getRecipesScheduledExpire(Constants.Recipe.DRAFT);
+    @Transactional
+    public void sendDraftRecipeExpireNotice() {
+        List<RecipeVo> draftRecipes = recipeMapper.getRecipesScheduledExpire(Constants.Recipe.DRAFT);
+
+        if (draftRecipes.isEmpty()) {
+            log.info("No draft recipes to delete Scheduled");
+            return;
+        }
+
+        List<NoticeVo> noticeList = draftRecipes.stream()
+                .map(recipe -> new NoticeVo(
+                        null,
+                        recipe.getUserNo(),
+                        recipe.getRecipeNo(),
+                        Constants.NoticeType.DRAFT,
+                        recipe.getTitle() + " 레시피의 저장 만료기한이 일주일 남았습니다.",
+                        Constants.Yn.NO,
+                        recipe.getUserNo()
+                ))
+                .toList();
+
+        noticeService.insertNotice(noticeList);
     }
 
     private List<InsertWeeklyRecipeVo> buildWeeklyRecipes(List<WeeklyRecipeInfoVo> topLikedList) {
