@@ -23,4 +23,13 @@ public class NoticeScheduler {
             log.error("Error delete OlderNotice", e);
         }
     }
+
+    @Scheduled(cron = "0 0 4 * * *", zone = Constants.TimeZone.SEOUL)
+    public void sendDraftRecipeExpireNotice() {
+        try {
+            noticeService.sendDraftRecipeExpireNotice();
+        } catch (Exception e) {
+            log.error("Error delete old draft recipe notices", e);
+        }
+    }
 }

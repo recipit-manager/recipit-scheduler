@@ -92,7 +92,7 @@
               AND LIKE_YN = 'N'
     </delete>
 
-    <select id="getDraftRecipes" resultType="toy.recipit.mapper.vo.RecipeVo">
+    <select id="getOlderDraftRecipes" resultType="toy.recipit.mapper.vo.RecipeVo">
         SELECT
             RECIPE_NO       AS recipeNo,
             USER_NO         AS userNo,
@@ -146,4 +146,22 @@
             )
         </foreach>
     </insert>
+
+    <select id="getRecipesScheduledExpire" resultType="toy.recipit.mapper.vo.RecipeVo">
+        SELECT
+            RECIPE_NO       AS recipeNo,
+            USER_NO         AS userNo,
+            TITLE           AS title,
+            DESCRIPTION     AS description,
+            CATEGORY_CODE   AS categoryCode,
+            COOKING_TIME    AS cookingTime,
+            SERVING_SIZE    AS servingSize,
+            DIFFICULTY_CODE AS difficultyCode,
+            STATUS_CODE     AS statusCode
+        FROM RC_RECIPE
+        <![CDATA[
+        WHERE EDIT_DATETIME >= DATE_SUB(CURDATE(), INTERVAL 23 DAY)
+          AND EDIT_DATETIME < DATE_SUB(CURDATE(), INTERVAL 22 DAY)]]>
+          AND STATUS_CODE = #{draftStatusCode}
+    </select>
 </mapper>
