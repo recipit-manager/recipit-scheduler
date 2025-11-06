@@ -21,8 +21,7 @@ public class NoticeDispatch {
 
     public void sendNotices(List<NoticeItem> items) {
         try {
-            NoticeRequest noticeRequest = new NoticeRequest(items);
-            noticeClient.sendNotices(noticeRequest, internalAuthKey);
+            noticeClient.sendNotices(new NoticeRequest(items), internalAuthKey);
             log.info("Success send message, Size : {}", items.size());
         } catch (Exception e) {
             log.error("Failed send message", e);
