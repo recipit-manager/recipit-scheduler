@@ -16,7 +16,7 @@ public class NoticeScheduler {
     private final NoticeService noticeService;
 
     @Scheduled(cron = "0 50 3 * * *", zone = Constants.TimeZone.SEOUL)
-    public void deleteWeeklyRecipe() {
+    public void deleteOlderNotices() {
         try {
             noticeService.deleteOlderNotices();
         } catch (Exception e) {

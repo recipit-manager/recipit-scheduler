@@ -1,6 +1,6 @@
 recipit:
   noticeApi:
-    url: http://localhost:8080/notice/dispatch
+    url: http://localhost:8080/notice
 
 spring:
   datasource:

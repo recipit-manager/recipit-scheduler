@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import toy.recipit.Dispatch.dto.NoticeItem;
 import toy.recipit.common.Constants;
 import toy.recipit.mapper.RecipeMapper;
 import toy.recipit.mapper.vo.InsertWeeklyRecipeVo;
@@ -23,8 +22,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RecipeService {
-
     private final RecipeMapper recipeMapper;
+    private final NoticeService noticeService;
 
     @Transactional
     public void generateWeeklyRecipes() {
@@ -74,14 +73,14 @@ public class RecipeService {
     }
 
     @Transactional
-    public List<NoticeItem> deleteDraftRecipes() {
-        List<RecipeVo> draftRecipes = recipeMapper.getDraftRecipes(
+    public void deleteDraftRecipes() {
+        List<RecipeVo> draftRecipes = recipeMapper.getOlderDraftRecipes(
                 Constants.Recipe.DRAFT,
                 LocalDateTime.now().minusDays(30));
 
         if (draftRecipes.isEmpty()) {
             log.info("No draft recipes to delete");
-            return List.of();
+            return;
         }
 
         List<String> recipeNos = draftRecipes.stream()
@@ -106,11 +105,31 @@ public class RecipeService {
                 ))
                 .toList();
 
-        recipeMapper.insertNotices(noticeList);
+        noticeService.insertNotice(noticeList);
+    }
 
-        return noticeList.stream()
-                .map(noticeVo -> new NoticeItem(noticeVo.getNoticeNo(), noticeVo.getUserNo()))
+    @Transactional
+    public void sendDraftRecipeExpireNotice() {
+        List<RecipeVo> draftRecipes = recipeMapper.getRecipesScheduledExpire(Constants.Recipe.DRAFT);
+
+        if (draftRecipes.isEmpty()) {
+            log.info("No draft recipes to delete Scheduled");
+            return;
+        }
+
+        List<NoticeVo> noticeList = draftRecipes.stream()
+                .map(recipe -> new NoticeVo(
+                        null,
+                        recipe.getUserNo(),
+                        recipe.getRecipeNo(),
+                        Constants.NoticeType.DRAFT,
+                        recipe.getTitle() + " 레시피의 저장 만료기한이 일주일 남았습니다.",
+                        Constants.Yn.NO,
+                        recipe.getUserNo()
+                ))
                 .toList();
+
+        noticeService.insertNotice(noticeList);
     }
 
     private List<InsertWeeklyRecipeVo> buildWeeklyRecipes(List<WeeklyRecipeInfoVo> topLikedList) {
