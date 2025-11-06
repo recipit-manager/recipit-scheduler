@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -12,6 +13,7 @@ import java.time.ZoneOffset;
 import java.util.TimeZone;
 
 @Slf4j
+@EnableFeignClients(basePackages = "toy.recipit.dispatch.client")
 @SpringBootApplication
 public class RecipitSchedulerApplication {
     private final DataSource dataSource;
