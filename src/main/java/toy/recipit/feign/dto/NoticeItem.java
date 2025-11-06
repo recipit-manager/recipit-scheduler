@@ -1,4 +1,4 @@
-package toy.recipit.dispatch.dto;
+package toy.recipit.feign.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

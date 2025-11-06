@@ -13,7 +13,7 @@ import java.time.ZoneOffset;
 import java.util.TimeZone;
 
 @Slf4j
-@EnableFeignClients(basePackages = "toy.recipit.dispatch.client")
+@EnableFeignClients(basePackages = "toy.recipit.feign.client")
 @SpringBootApplication
 public class RecipitSchedulerApplication {
     private final DataSource dataSource;
